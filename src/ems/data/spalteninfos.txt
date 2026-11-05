@@ -1,0 +1,14 @@
+Die Dateien „City_Wetter“ und „Universität_Wetter“ enthalten folgende Spalteninformationen:
+
+Datum: Tag der Messung
+Tmin: Niedrigste Temperatur °C
+Tmit: Mittlere Temperatur °C
+Tmax: Höchste Temperatur °C
+Sges: Gesamtdauer Sonnenschein Stunden
+Rges: Gesamtregenmenge mm oder l/qm
+Tbod: Minimum-Bodentemperatur °C
+RFmin: Minimale Luftfeuchtigkeit %
+RFmit: Mittlere Luftfeuchtigkeit %
+RFmax: Maximale Luftfeuchtigkeit %
+Wmit: Mittlerer Wind km/h
+WBmax: Maximale Windboe km/h

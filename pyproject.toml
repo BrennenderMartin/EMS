@@ -1,0 +1,30 @@
+[project]
+name = "ems"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Mattis Jung", email = "mattis2612@outlook.de" }
+]
+dependencies = [
+    "pandas>=3.1.1",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.rye.scripts]
+main = "python -m src.ems.main"
+ems = "python -m src.ems.ems"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ems"]
