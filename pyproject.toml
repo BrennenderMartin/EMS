@@ -7,6 +7,7 @@ authors = [
 ]
 dependencies = [
     "pandas>=3.1.1",
+    "peewee>=4.5.3",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -21,6 +22,7 @@ dev-dependencies = []
 
 [tool.rye.scripts]
 main = "python -m src.ems.main"
+db  = "rye run python -m ems.database.crud"
 ems = "python -m src.ems.ems"
 
 [tool.hatch.metadata]
