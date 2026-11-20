@@ -30,6 +30,6 @@ class OilData(BaseModel):
 
 def build() -> SqliteDatabase:
     db.connect()
-    db.create_tables([WeatherData, OilData])
+    db.create_tables([WeatherData, OilData]) # type: ignore
 
     return db

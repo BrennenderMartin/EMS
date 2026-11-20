@@ -3,7 +3,7 @@ from ems.database.struct import (
     OilData,
     WeatherData
 )
-from ems.data.enums import (
+from ems.data.data_config import (
     time_type
 )
 
@@ -12,31 +12,31 @@ from datetime import datetime
 db = build()
 
 def add_weather_entry(timestamp: dict[time_type, int], tAvg: float, sSum: float, wAvg: float) -> WeatherData:
-    return WeatherData.create(
+    return WeatherData.create( # type: ignore
         timestamp=datetime(year=timestamp[time_type.YEAR], month=timestamp[time_type.MONTH], day=1),
-        entry=WeatherData.select().count() + 1,
+        entry=WeatherData.select().count() + 1, # type: ignore
         tAvg=tAvg,
         sSum=sSum,
         wAvg=wAvg
     )
 
 def add_oil_entry(timestamp: dict[time_type, int], pUSD: float) -> OilData:
-    return OilData.create(
+    return OilData.create( # type: ignore
         timestamp=datetime(year=timestamp[time_type.YEAR], month=timestamp[time_type.MONTH], day=1),
-        entry=OilData.select().count() + 1,
+        entry=OilData.select().count() + 1, # type: ignore
         pUSD=pUSD
     )
 
 def get_weather_entry(timestamp: dict[time_type, int]) -> WeatherData:
-    return WeatherData.get(
-        WeatherData.timestamp.year == timestamp[time_type.YEAR],
-        WeatherData.timestamp.month == timestamp[time_type.MONTH]
+    return WeatherData.get( # type: ignore
+        WeatherData.timestamp.year == timestamp[time_type.YEAR], # type:ignore
+        WeatherData.timestamp.month == timestamp[time_type.MONTH] # type: ignore
     )
 
 def get_oil_entry(timestamp: dict[time_type, int]) -> OilData:
-    return OilData.get(
-        OilData.timestamp.year == timestamp[time_type.YEAR],
-        OilData.timestamp.month == timestamp[time_type.MONTH]
+    return OilData.get( # type: ignore
+        OilData.timestamp.year == timestamp[time_type.YEAR], # type: ignore
+        OilData.timestamp.month == timestamp[time_type.MONTH] # type: ignore
     )
 
 

@@ -23,6 +23,7 @@ dev-dependencies = []
 [tool.rye.scripts]
 main = "python -m src.ems.main"
 db  = "rye run python -m ems.database.crud"
+dataloader = "rye run python -m ems.data_loader"
 ems = "python -m src.ems.ems"
 
 [tool.hatch.metadata]
