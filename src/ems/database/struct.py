@@ -17,15 +17,15 @@ class WeatherData(BaseModel):
     entry = IntegerField(primary_key=True)
     timestamp = DateField(formats=["%Y-%m"]) # year + month
     # DATA FIELDS
-    tAvg = FloatField() # average temp (in C°)
-    sSum = FloatField() # sum of sun-hours
-    wAvg = FloatField() # average wind speed (km/h)
+    tAvg = FloatField(null=True) # average temp (in C°)
+    sSum = FloatField(null=True) # sum of sun-hours
+    wAvg = FloatField(null=True) # average wind speed (km/h)
 
 class OilData(BaseModel):
     entry = IntegerField(primary_key=True)
     timestamp = DateField(formats=["%Y-%m"]) # year + month
     # DATA FIELDS
-    pUSD = FloatField() # price in USD
+    pUSD = FloatField(null=True) # price in USD
 
 
 def build() -> SqliteDatabase:
