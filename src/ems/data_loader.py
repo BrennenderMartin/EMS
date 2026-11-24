@@ -27,9 +27,11 @@ class DataLoader:
     def load_to_database(self) -> bool:
         curr_date = datetime(year=self.start_date[time_type.YEAR], month=self.start_date[time_type.MONTH], day=1)
         while curr_date != datetime(year=self.end_date[time_type.YEAR], month=self.end_date[time_type.MONTH], day=1):
+            print(f"{curr_date.strftime("%d/%m/%Y")}", end=" ")
             extracted: dict[data_types, dict[datetime, dict[data_types, list[float]]]] = defaultdict(
                 lambda: defaultdict(lambda: defaultdict(list))
             )
+            stats_count: int = 0
             for (data_type, path, time_format, sep), dataset in csv_field_config.items():
                 for csv_dataset, field_data in dataset.items():
                     data: DataFrame = read_csv(f"{path}/{csv_dataset}", sep=sep)
@@ -39,6 +41,7 @@ class DataLoader:
                         (data[field_data[data_types.DATE]].dt.month == curr_date.month) & (data[field_data[data_types.DATE]].dt.year == curr_date.year)
                     ]
                     if len(sel_rows) == 0: continue
+                    stats_count += len(sel_rows)
 
                     match data_type:
                         case data_types.WEATHER_DATA:
@@ -65,10 +68,12 @@ class DataLoader:
                         )
                     case _: pass
 
+            print(f"-> {stats_count} rows used")
+
             curr_date = curr_date + relativedelta(months=1)
         return True
 
 
 if __name__ == "__main__":
-    dataloader = DataLoader(start_date={time_type.YEAR: 2012, time_type.MONTH: 1}, end_date={time_type.YEAR: 2024, time_type.MONTH: 12})
+    dataloader = DataLoader(start_date={time_type.YEAR: 1900, time_type.MONTH: 1}, end_date={time_type.YEAR: 2026, time_type.MONTH: 12})
     dataloader.load_to_database()
