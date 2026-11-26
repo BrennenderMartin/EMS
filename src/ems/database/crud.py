@@ -11,7 +11,9 @@ from datetime import datetime
 
 db = build()
 
-def add_weather_entry(timestamp: dict[time_type, int], tAvg: float, sSum: float, wAvg: float) -> WeatherData:
+def add_weather_entry(timestamp: dict[time_type, int], tAvg: float, sSum: float, wAvg: float) -> WeatherData | None:
+    if WeatherData.select().where((WeatherData.timestamp.year == timestamp[time_type.YEAR]) & (WeatherData.timestamp.month == timestamp[time_type.MONTH])).exists(): # type: ignore
+        return None
     return WeatherData.create( # type: ignore
         timestamp=datetime(year=timestamp[time_type.YEAR], month=timestamp[time_type.MONTH], day=1),
         entry=WeatherData.select().count() + 1, # type: ignore
@@ -20,7 +22,10 @@ def add_weather_entry(timestamp: dict[time_type, int], tAvg: float, sSum: float,
         wAvg=wAvg
     )
 
-def add_oil_entry(timestamp: dict[time_type, int], pUSD: float) -> OilData:
+def add_oil_entry(timestamp: dict[time_type, int], pUSD: float) -> OilData | None:
+    if OilData.select().where((OilData.timestamp.year == timestamp[time_type.YEAR]) & (OilData.timestamp.month == timestamp[time_type.MONTH])).exists(): # type: ignore
+        return None
+    
     return OilData.create( # type: ignore
         timestamp=datetime(year=timestamp[time_type.YEAR], month=timestamp[time_type.MONTH], day=1),
         entry=OilData.select().count() + 1, # type: ignore

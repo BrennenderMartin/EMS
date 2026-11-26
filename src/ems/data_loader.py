@@ -1,7 +1,9 @@
 from collections import defaultdict
 from ems.database.crud import (
     add_oil_entry,
-    add_weather_entry
+    add_weather_entry,
+    get_oil_entry,
+    get_weather_entry
 )
 from pandas import (
     DataFrame,
@@ -25,13 +27,13 @@ class DataLoader:
         self.end_date = end_date
 
     def load_to_database(self) -> bool:
+        print(f"{self.start_date[time_type.MONTH]}.{self.start_date[time_type.YEAR]} -> {self.end_date[time_type.MONTH]}.{self.end_date[time_type.YEAR]}", end=" ")
         curr_date = datetime(year=self.start_date[time_type.YEAR], month=self.start_date[time_type.MONTH], day=1)
+        stats_count: int = 0
         while curr_date != datetime(year=self.end_date[time_type.YEAR], month=self.end_date[time_type.MONTH], day=1):
-            print(f"{curr_date.strftime("%d/%m/%Y")}", end=" ")
             extracted: dict[data_types, dict[datetime, dict[data_types, list[float]]]] = defaultdict(
                 lambda: defaultdict(lambda: defaultdict(list))
             )
-            stats_count: int = 0
             for (data_type, path, time_format, sep), dataset in csv_field_config.items():
                 for csv_dataset, field_data in dataset.items():
                     data: DataFrame = read_csv(f"{path}/{csv_dataset}", sep=sep)
@@ -45,9 +47,8 @@ class DataLoader:
 
                     match data_type:
                         case data_types.WEATHER_DATA:
-                            extracted[data_type][curr_date][data_types.WAVG].append(round(to_numeric(sel_rows[field_data[data_types.WAVG]].str.replace(",", "."), errors="coerce").mean(), 2))
-                            extracted[data_type][curr_date][data_types.SSUM].append(round(to_numeric(sel_rows[field_data[data_types.SSUM]].str.replace(",", "."), errors="coerce").mean(), 2))
-                            extracted[data_type][curr_date][data_types.TAVG].append(round(to_numeric(sel_rows[field_data[data_types.TAVG]].str.replace(",", "."), errors="coerce").mean(), 2))
+                            for weather_data_type in [data_types.SSUM, data_types.TAVG, data_types.WAVG]:
+                                extracted[data_type][curr_date][weather_data_type].append(round(to_numeric(sel_rows[field_data[weather_data_type]].str.replace(",", "."), errors="coerce").mean(), 2))
                         case data_types.OIL_DATA:
                             extracted[data_type][curr_date][data_types.PUSD].append(round(sel_rows[field_data[data_types.PUSD]].mean(), 2))
 
@@ -68,12 +69,24 @@ class DataLoader:
                         )
                     case _: pass
 
-            print(f"-> {stats_count} rows used")
-
             curr_date = curr_date + relativedelta(months=1)
+        print(f"finished with {stats_count} rows used")
         return True
+
+    def get_data_for_date(self, date: dict[time_type, int]) -> dict[data_types, dict[data_types, float | None]]:
+        oil_data, weather_data = get_oil_entry(date), get_weather_entry(date)
+        return {
+            data_types.OIL_DATA: {
+                data_types.PUSD: oil_data.pUSD
+            },
+            data_types.WEATHER_DATA: {
+                data_types.WAVG: weather_data.wAvg,
+                data_types.TAVG: weather_data.tAvg,
+                data_types.SSUM: weather_data.sSum
+            }
+        }
 
 
 if __name__ == "__main__":
-    dataloader = DataLoader(start_date={time_type.YEAR: 1900, time_type.MONTH: 1}, end_date={time_type.YEAR: 2026, time_type.MONTH: 12})
+    dataloader = DataLoader(start_date={time_type.YEAR: 2015, time_type.MONTH: 1}, end_date={time_type.YEAR: 2024, time_type.MONTH: 12})
     dataloader.load_to_database()
