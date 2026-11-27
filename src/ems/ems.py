@@ -10,5 +10,7 @@ dataloader = DataLoader(
 dataloader.load_to_database()
 simulation = Simulator(dataloader_instance=dataloader)
 
+print(simulation.calc_solar_output(panels=15000))
+
 print(simulation.curr_sim_date)
-print(simulation.curr_data)
+print(simulation.db_data)

@@ -17,6 +17,9 @@ class data_types(Enum):
     WAVG = "wavg" # average wind
     PUSD = "pusd" # oil price in usd
 
+class simulation_types(Enum):
+    SOLAR_OUTPUT = "solar output"
+
 # data_type, path, date-format, seperator -> csv filename, data field type, collum name
 csv_field_config: dict[tuple[data_types, str, str, str], dict[str, dict[data_types, str]]] = {
     (data_types.WEATHER_DATA, "./src/ems/data/wetterdaten", r"%d.%m.%Y", ";"): {
